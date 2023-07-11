@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { UserApis } from './apis/apis';
 import UserModal from './components/UserModal';
 import CsvExportButton from './components/CsvExportButton';
+import UserListItem from './components/UserListItem';
 
 function App() {
   const [showModal, setShowModal] = useState(false);
@@ -32,7 +33,7 @@ function App() {
 
   const handleOnClose = () => setShowModal(false);
   return (
-    <div className='container pt-8'>
+    <div className='container py-8'>
       <div className='space-y-4'>
         <div className='flex justify-between'>
           <CsvExportButton data={users} headers={headers} />
@@ -45,22 +46,11 @@ function App() {
         </div>
         <div className='flex justify-end'></div>
         {users.map((user) => (
-          <div key={user['_id']} className='space-y-1'>
-            <p className='border border-black rounded py-1 px-3 flex justify-between items-center'>
-              {`${user['name']} (${user['age']} years old)`}{' '}
-              <span
-                className='text-red-400 font-bold text-2xl'
-                onClick={() => handleUserDelete(user['_id'])}
-              >
-                x
-              </span>
-            </p>
-            <img
-              src={user['avatar']}
-              alt={user['name']}
-              className='w-24 h-24 object-cover rounded-xl'
-            />
-          </div>
+          <UserListItem
+            key={user['_id']}
+            user={user}
+            handleUserDelete={handleUserDelete}
+          />
         ))}
       </div>
       <UserModal

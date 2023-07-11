@@ -1,5 +1,6 @@
 import React from 'react';
 import { UserApis } from '../apis/apis';
+import LoadingSpinner from './LoadingSpinner';
 
 const ImageUploader = ({
   isDisabled,
@@ -18,25 +19,24 @@ const ImageUploader = ({
   };
 
   return (
-    <div>
-      <label
-        htmlFor='upload'
-        className={`inline-block px-4 py-1 rounded-sm text-center cursor-pointer mb-4 mt-5 ${
-          isDisabled
-            ? 'pointer-events-none cursor-not-allowed bg-gray-500'
-            : 'bg-black text-white'
-        }`}
-      >
-        {text}
-        <input
-          type='file'
-          className='hidden'
-          id='upload'
-          name='upload'
-          onChange={handleFileUpload}
-        />
-      </label>
-    </div>
+    <label
+      htmlFor='upload'
+      className={`px-4 py-1 rounded-sm text-center cursor-pointer mb-4 mt-5 flex hover:scale-95 ${
+        isDisabled
+          ? 'pointer-events-none cursor-not-allowed bg-gray-500'
+          : 'bg-black text-white'
+      }`}
+    >
+      {text}
+      {isDisabled ? <LoadingSpinner /> : ''}
+      <input
+        type='file'
+        className='hidden'
+        id='upload'
+        name='upload'
+        onChange={handleFileUpload}
+      />
+    </label>
   );
 };
 

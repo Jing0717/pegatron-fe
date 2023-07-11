@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { UserApis } from '../apis/apis';
 import ImageUploader from './ImageUploader';
+import LoadingSpinner from './LoadingSpinner';
 
 const UserModal = ({ visible, onClose, setVisible, users, setUsers }) => {
   const [name, setName] = useState('');
@@ -10,6 +11,7 @@ const UserModal = ({ visible, onClose, setVisible, users, setUsers }) => {
   const [uploadImg, setUploadImg] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+  const [loading, setLoading] = useState(false);
 
   if (!visible) return null;
 
@@ -24,7 +26,8 @@ const UserModal = ({ visible, onClose, setVisible, users, setUsers }) => {
     setIsDisabled(false);
   };
 
-  const handleOnSubmit = async (e) => {
+  const handleOnSubmit = async () => {
+    setLoading(true);
     const result = await UserApis.addUser({ name, age, avatar: uploadImg });
     if (result.status) {
       setErrorMessage('');
@@ -36,10 +39,12 @@ const UserModal = ({ visible, onClose, setVisible, users, setUsers }) => {
       setTimeout(() => {
         setSuccessMsg('');
         setVisible(false);
-      }, 2000);
+      }, 1000);
     } else {
       setErrorMessage(result.message);
+      setTimeout(() => setErrorMessage(''), 2000);
     }
+    setLoading(false);
   };
 
   return (
@@ -90,10 +95,16 @@ const UserModal = ({ visible, onClose, setVisible, users, setUsers }) => {
           <div className='text-center mt-8 text-green-700'>{successMsg}</div>
         )}
         <button
-          className='bg-purple-800 text-white rounded-sm px-3 py-1 mt-4'
+          type='button'
+          className={`rounded-sm px-3 py-1 mt-4 flex hover:scale-95 ${
+            isDisabled
+              ? 'pointer-events-none cursor-not-allowed bg-gray-500'
+              : 'bg-purple-800 text-white'
+          }`}
           onClick={handleOnSubmit}
         >
           Add User
+          {loading ? <LoadingSpinner /> : ''}
         </button>
       </div>
     </div>
