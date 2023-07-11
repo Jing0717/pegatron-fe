@@ -22,7 +22,9 @@ const UserApis = {
   deleteUser: (params) => request.delete(`/users/${params.id}`),
   uploadImg: (params) =>
     request.post('/users/upload', params, {
-      'Content-Type': 'multipart/form-data',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
     }),
 };
 

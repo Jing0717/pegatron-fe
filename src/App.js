@@ -47,7 +47,13 @@ function App() {
           Add
         </button>
       </div>
-      <UserModal visible={showModal} onClose={handleOnClose} />
+      <UserModal
+        visible={showModal}
+        onClose={handleOnClose}
+        setVisible={setShowModal}
+        users={users}
+        setUsers={setUsers}
+      />
     </div>
   );
 }
