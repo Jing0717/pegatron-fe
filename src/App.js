@@ -1,11 +1,20 @@
 import { useEffect, useState } from 'react';
+import { UserApis } from './apis/apis';
 import UserModal from './components/UserModal';
 import CsvExportButton from './components/CsvExportButton';
-import { UserApis } from './apis/apis';
 
 function App() {
   const [showModal, setShowModal] = useState(false);
   const [users, setUsers] = useState([]);
+
+  const handleUserDelete = async (userId) => {
+    const result = await UserApis.deleteUser({ id: userId });
+    if (result.status) {
+      setUsers(users.filter((user) => user['_id'] !== userId));
+    } else {
+      console.log('刪除失敗: ', result.message);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,27 +34,34 @@ function App() {
   return (
     <div className='container pt-8'>
       <div className='space-y-4'>
-        <div className='flex justify-end'>
+        <div className='flex justify-between'>
           <CsvExportButton data={users} headers={headers} />
+          <button
+            onClick={() => setShowModal(true)}
+            className='bg-blue-600 text-white px-5 py-1 hover:scale-95 rounded transition'
+          >
+            Add
+          </button>
         </div>
-        {users.map((person, index) => (
-          <div key={index} className='space-y-1'>
-            <p className='border border-black rounded p-1'>{`${person['name']} (${person['age']} years old)`}</p>
+        <div className='flex justify-end'></div>
+        {users.map((user) => (
+          <div key={user['_id']} className='space-y-1'>
+            <p className='border border-black rounded py-1 px-3 flex justify-between items-center'>
+              {`${user['name']} (${user['age']} years old)`}{' '}
+              <span
+                className='text-red-400 font-bold text-2xl'
+                onClick={() => handleUserDelete(user['_id'])}
+              >
+                x
+              </span>
+            </p>
             <img
-              src={person['avatar']}
-              alt={person['name']}
+              src={user['avatar']}
+              alt={user['name']}
               className='w-24 h-24 object-cover rounded-xl'
             />
           </div>
         ))}
-      </div>
-      <div className='flex justify-end'>
-        <button
-          onClick={() => setShowModal(true)}
-          className='bg-blue-600 text-white px-5 py-1 hover:scale-95 rounded transition'
-        >
-          Add
-        </button>
       </div>
       <UserModal
         visible={showModal}
